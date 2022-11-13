@@ -5,7 +5,7 @@ from django.db import models
 User = get_user_model()
 
 
-class Ingredient(models.Model):  # +
+class Ingredient(models.Model):
     name = models.CharField(
         verbose_name='Название',
         max_length=100,
@@ -24,7 +24,7 @@ class Ingredient(models.Model):  # +
         return f'{self.name} {self.measurement_unit}'
 
 
-class Tag(models.Model):  # +
+class Tag(models.Model):
     name = models.CharField(
         verbose_name='Название',
         max_length=100,
@@ -47,7 +47,7 @@ class Tag(models.Model):  # +
         return self.name
 
 
-class Recipe(models.Model):  # +
+class Recipe(models.Model):
     author = models.ForeignKey(
         User,
         verbose_name='Автор',
@@ -93,7 +93,7 @@ class Recipe(models.Model):  # +
         return self.name
 
 
-class IngredientInRecipe(models.Model):  # +
+class IngredientInRecipe(models.Model):
     ingredient = models.ForeignKey(
         Ingredient,
         on_delete=models.CASCADE,
@@ -121,7 +121,7 @@ class IngredientInRecipe(models.Model):  # +
         ]
 
 
-class Favorites(models.Model):  # +
+class Favorites(models.Model):
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -149,7 +149,7 @@ class Favorites(models.Model):  # +
         return f'Рецепт {self.recipe} в избранном у {self.user}'
 
 
-class Follow(models.Model):  # +
+class Follow(models.Model):
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
