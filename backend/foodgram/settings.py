@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'recipes.apps.RecipesConfig',
+    'users.apps.UsersConfig',
     'rest_framework',
 ]
 
@@ -108,8 +109,6 @@ USE_L10N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/2.2/howto/static-files/
-
+AUTH_USER_MODEL = 'users.CustomUser'
 STATIC_URL = '/static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
