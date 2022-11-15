@@ -1,4 +1,6 @@
 from django.db.models import Exists, OuterRef
+from django.http.response import HttpResponse
+from djoser.views import UserViewSet
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
@@ -6,10 +8,55 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
 from .filters import IngredientNameFilter, RecipeFilter
-from .models import Favorites, Ingredient, Purchase, Recipe, Tag, IngredientInRecipe
+from .models import (Favorites, Follow, Ingredient, IngredientInRecipe,
+                     Purchase, Recipe, Tag, User)
 from .pagination import CustomPagination
 from .permissions import IsOwnerOrAdminOrReadOnly
-from .serializers import IngredientSerializer, RecipeSerializer, TagSerializer, IngredientInRecipeSerializer
+from .serializers import (FollowSerializer, IngredientInRecipeSerializer,
+                          IngredientSerializer, RecipeSerializer,
+                          TagSerializer, UserSerializer)
+
+
+class CustomUserViewSet(UserViewSet):
+    queryset = User.objects.all()
+    pagination_class = CustomPagination
+    permission_classes = (IsOwnerOrAdminOrReadOnly,)
+    serializer_class = UserSerializer
+
+    @action(detail=True, permission_classes=[IsAuthenticated])
+    def subscribe(self, request, id=None):
+        user = request.user
+        author = get_object_or_404(User, id=id)
+        data = {
+            'user': user.id,
+            'author': author.id
+        }
+        serializer = FollowSerializer(data=data, context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    @subscribe.mapping.delete
+    def delete_subscribe(self, request, id=None):
+        user = request.user
+        author = get_object_or_404(User, id=id)
+        subscribe = get_object_or_404(
+            Follow, user=user, author=author
+        )
+        subscribe.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @action(detail=False, permission_classes=[IsAuthenticated])
+    def subscriptions(self, request):
+        user = request.user
+        queryset = Follow.objects.filter(user=user)
+        pages = self.paginate_queryset(queryset)
+        serializer = FollowSerializer(
+            pages,
+            many=True,
+            context={'request': request}
+        )
+        return self.get_paginated_response(serializer.data)
 
 
 class TagViewSet(viewsets.ReadOnlyModelViewSet):
@@ -142,4 +189,4 @@ class RecipeViewSet(viewsets.ModelViewSet):
         response = HttpResponse(shopping_list, 'Content-Type: text/plain')
         response['Content-Disposition'] = 'attachment; filename="shoplist.txt"'
 
-        return
+        return response

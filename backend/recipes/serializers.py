@@ -1,9 +1,11 @@
+import base64
+
+from django.core.files.base import ContentFile
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers
-import base64
-from django.core.files.base import ContentFile
-from .models import (Favorites, Follow, Ingredient,
-                     IngredientInRecipe, Purchase, Recipe, Tag, User)
+
+from .models import (Favorites, Follow, Ingredient, IngredientInRecipe,
+                     Purchase, Recipe, Tag, User)
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -25,6 +27,31 @@ class IngredientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ingredient
         fields = ('name', 'measurement_unit')
+
+
+class FollowSerializer(serializers.ModelSerializer):
+    queryset = User.objects.all()
+    user = serializers.PrimaryKeyRelatedField(queryset=queryset)
+    author = serializers.PrimaryKeyRelatedField(queryset=queryset)
+
+    class Meta:
+        model = Follow
+        fields = ('user', 'author')
+
+    def validate(self, data):
+        request = self.context.get('request')
+        author_id = data['author'].id
+        follow_exist = Follow.objects.filter(
+            user=request.user,
+            author__id=author_id
+        ).exists()
+        if request.method == 'GET':
+            if request.user == author_id:
+                raise serializers.ValidationError('Нельзя подписаться на себя')
+            if follow_exist:
+                raise serializers.ValidationError(
+                    'вы уже подписаны на этого пользователя')
+        return data
 
 
 class IngredientInRecipeSerializer(serializers.ModelSerializer):
