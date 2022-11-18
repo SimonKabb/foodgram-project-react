@@ -12,9 +12,10 @@ from .models import (Favorites, Follow, Ingredient, IngredientInRecipe,
                      Purchase, Recipe, Tag, User)
 from .pagination import CustomPagination
 from .permissions import IsOwnerOrAdminOrReadOnly
-from .serializers import (FollowSerializer, IngredientInRecipeSerializer,
-                          IngredientSerializer, RecipeSerializer,
-                          TagSerializer, UserSerializer)
+from .serializers import (FavoriteSerializer, FollowSerializer,
+                          IngredientInRecipeSerializer, IngredientSerializer,
+                          PurchaseSerializer, RecipeSerializer, TagSerializer,
+                          UserSerializer)
 
 
 class CustomUserViewSet(UserViewSet):
@@ -111,7 +112,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
             'user': user.id,
             'recipe': recipe.id,
         }
-        serializer = FavoritesSerializer(
+        serializer = FavoriteSerializer(
             data=data,
             context={'request': request}
         )
