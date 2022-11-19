@@ -13,9 +13,8 @@ from .models import (Favorites, Follow, Ingredient, IngredientInRecipe,
 from .pagination import CustomPagination
 from .permissions import IsOwnerOrAdminOrReadOnly
 from .serializers import (FavoriteSerializer, FollowSerializer,
-                          IngredientInRecipeSerializer, IngredientSerializer,
-                          PurchaseSerializer, RecipeSerializer, TagSerializer,
-                          UserSerializer)
+                          IngredientSerializer, PurchaseSerializer,
+                          RecipeSerializer, TagSerializer, UserSerializer)
 
 
 class CustomUserViewSet(UserViewSet):
