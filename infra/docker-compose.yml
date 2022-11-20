@@ -40,8 +40,8 @@ services:
     env_file:
       - ./.env
 
-  volumes:
-    static_value:
-    media_value:
-    result_build:
-    postgres_data:
+volumes:
+  static_value:
+  media_value:
+  result_build:
+  postgres_data:
