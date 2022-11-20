@@ -3,7 +3,9 @@ Django settings for foodgram project.
 """
 
 import os
+from dotenv import load_dotenv
 
+load_dotenv()
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -12,7 +14,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'pz(_ilplwj=_1n5=#2b48x6rtg8w&-g=p=1nrrq#5nd13z6q2w'
+SECRET_KEY = os.environ.get('SECRET_KEY', 'DEFAULT_PARAM')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -30,9 +32,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_filters',
+
     'rest_framework',
     'rest_framework.authtoken',
     'djoser',
+
     'recipes',
     'users',
 ]
@@ -48,11 +52,11 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'foodgram.urls'
-
+TEMPLATES_DIR = os.path.join(BASE_DIR, "templates")
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [TEMPLATES_DIR],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -73,8 +77,12 @@ WSGI_APPLICATION = 'foodgram.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': os.getenv('DB_ENGINE'),
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('POSTGRES_USER'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
+        'HOST': os.getenv('DB_HOST'),
+        'PORT': os.getenv('DB_PORT')
     }
 }
 
@@ -128,7 +136,18 @@ USE_L10N = True
 
 USE_TZ = True
 
-
+DJOSER = {
+    'LOGIN_FIELD': 'email',
+    'PASSWORD_RESET_CONFIRM_URL': 'users/reset_password/{uid}/{token}',
+    'USERNAME_RESET_CONFIRM_URL': 'users/reset_email/{uid}/{token}',
+    'ACTIVATION_URL': 'users/activation/{uid}/{token}',
+}
 AUTH_USER_MODEL = 'users.CustomUser'
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+AUTHENTICATION_BACKENDS = ['django.contrib.auth.backends.ModelBackend']
