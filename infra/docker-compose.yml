@@ -24,6 +24,7 @@ services:
       - result_build:/app/result_build/build
     depends_on:
       - db
+      
   nginx:
     image: nginx:1.19.3
     ports:
