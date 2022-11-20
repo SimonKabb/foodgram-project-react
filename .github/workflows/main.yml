@@ -63,9 +63,9 @@ jobs:
           stack_file_name: docker-compose.yml
           script: |
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foodgram_web:latest
-            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foodgram_frontend:v2.0
-            sudo docker-compose stop
-            sudo docker-compose rm web
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foodgram_frontend:v1.0
+            sudo docker compose stop
+            sudo docker compose rm web
             touch .env 
             echo SECRET_KEY=${{ secrets.SECRET_KEY }} > .env
             echo DB_ENGINE=${{ secrets.DB_ENGINE }} >> .env
