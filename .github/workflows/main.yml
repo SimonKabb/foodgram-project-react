@@ -62,9 +62,9 @@ jobs:
           passphrase: ${{ secrets.PASSPHRASE }}
           stack_file_name: docker-compose.yml
           script: |
+            sudo docker image rm simonkabb/foodgram_web
             sudo docker pull simonkabb/foodgram_web:latest
             sudo docker compose stop
-            sudo docker compose rm web
             rm .env
             touch .env
             echo SECRET_KEY=${{ secrets.SECRET_KEY }} >> .env

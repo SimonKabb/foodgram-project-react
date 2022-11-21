@@ -38,8 +38,6 @@ services:
     depends_on:
       - web
       - frontend
-    env_file:
-      - ./.env
 
 volumes:
   static_value:
