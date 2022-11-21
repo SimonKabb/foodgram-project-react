@@ -24,13 +24,13 @@ services:
       - result_build:/app/result_build/build
     depends_on:
       - db
-      
+
   nginx:
     image: nginx:1.19.3
     ports:
       - 80:80
     volumes:
-      - ./templates/default.conf.template:/etc/nginx/conf.d/default.conf
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
       - static_value:/static/
       - media_value:/media/
       - result_build:/usr/share/nginx/html/
