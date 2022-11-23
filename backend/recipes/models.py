@@ -61,6 +61,7 @@ class Recipe(models.Model):
     image = models.ImageField(
         verbose_name='Изображение',
         upload_to='recipes/',
+        blank=True
     )
     text = models.TextField(
         verbose_name='Описание'
@@ -81,7 +82,7 @@ class Recipe(models.Model):
     tags = models.ManyToManyField(
         Tag,
         related_name='recipes',
-        verbose_name='Теги'
+        verbose_name='Теги',
     )
 
     class Meta:

@@ -67,6 +67,10 @@ class IngredientInRecipeSerializer(serializers.ModelSerializer):
         source='ingredient.measurement_unit'
     )
 
+    class Meta:
+        model = IngredientInRecipe
+        fields = ('id', 'name', 'amount', 'measurement_unit')
+
 
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
@@ -103,13 +107,13 @@ class RecipeSerializer(serializers.ModelSerializer):
 
     def get_is_favorited(self, obj):
         request = self.context.get('request')
-        if request is None or request.user.is_anonimous:
+        if request is None or request.user.is_anonymous:
             return False
         return Favorites.objects.filter(user=request.user, recipe=obj).exists()
 
-    def get_is_in_shopping_card(self, obj):
+    def get_is_in_shopping_cart(self, obj):
         request = self.context.get('request')
-        if request is None or request.user.is_anonimous:
+        if request is None or request.user.is_anonymous:
             return False
         return Purchase.objects.filter(user=request.user, recipe=obj).exists()
 
