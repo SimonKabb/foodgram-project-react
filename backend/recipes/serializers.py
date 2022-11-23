@@ -26,7 +26,7 @@ class UserSerializer(serializers.ModelSerializer):
 class IngredientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ingredient
-        fields = ('name', 'measurement_unit')
+        fields = ('id', 'name', 'measurement_unit')
 
 
 class FollowerRecipeSerializer(serializers.ModelSerializer):
@@ -75,7 +75,7 @@ class IngredientInRecipeSerializer(serializers.ModelSerializer):
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
-        fields = ('name', 'color', 'slug')
+        fields = ('id', 'name', 'color', 'slug')
 
 
 class Base64ImageField(serializers.ImageField):
