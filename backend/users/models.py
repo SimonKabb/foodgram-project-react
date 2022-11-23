@@ -20,8 +20,9 @@ class CustomUserManager(BaseUserManager):
 
     def create_superuser(self, email, username, first_name,
                          last_name, password=None):
-        user = self.model(
-            email=self.normalize_email(email),
+        user = self.create_user(
+            email,
+            password=password,
             username=username,
             first_name=first_name,
             last_name=last_name,
@@ -30,7 +31,7 @@ class CustomUserManager(BaseUserManager):
         user.is_admin = True
         user.is_staff = True
         user.save(using=self._db)
-        return user
+        return
 
 
 class CustomUser(AbstractUser):
