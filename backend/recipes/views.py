@@ -15,6 +15,7 @@ from .models import (Favorites, Follow, Ingredient, IngredientInRecipe,
 from .pagination import CustomPagination
 from .permissions import IsOwnerOrAdminOrReadOnly
 from .serializers import (FavoriteSerializer, FollowSerializer,
+                          FollowerSerializer,
                           IngredientSerializer, PurchaseSerializer,
                           RecipeSerializer, TagSerializer, UserSerializer)
 
@@ -29,13 +30,17 @@ class CustomUserViewSet(UserViewSet):
     def subscribe(self, request, id=None):
         user = request.user
         author = get_object_or_404(User, id=id)
+
         data = {
             'user': user.id,
-            'author': author.id
+            'author': author.id,
         }
-        serializer = FollowSerializer(data=data, context={'request': request})
+        serializer = FollowSerializer(
+            data=data, context={'request': request}
+        )
         serializer.is_valid(raise_exception=True)
         serializer.save()
+
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     @subscribe.mapping.delete
@@ -46,6 +51,7 @@ class CustomUserViewSet(UserViewSet):
             Follow, user=user, author=author
         )
         subscribe.delete()
+
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(detail=False, permission_classes=[IsAuthenticated])
@@ -53,7 +59,7 @@ class CustomUserViewSet(UserViewSet):
         user = request.user
         queryset = Follow.objects.filter(user=user)
         pages = self.paginate_queryset(queryset)
-        serializer = FollowSerializer(
+        serializer = FollowerSerializer(
             pages,
             many=True,
             context={'request': request}

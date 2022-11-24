@@ -13,8 +13,8 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('email', 'id', 'username', 'first_name',
-                  'last_name', 'is_subscribed')
+        fields = ('email', 'id', 'username', 'first_name', 'last_name',
+                  'is_subscribed')
 
     def get_is_subscribed(self, obj):
         request = self.context.get('request')
@@ -33,6 +33,41 @@ class FollowerRecipeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Recipe
         fields = ('id', 'name', 'image', 'cooking_time')
+
+
+class FollowerSerializer(serializers.ModelSerializer):
+    id = serializers.ReadOnlyField(source='author.id')
+    email = serializers.ReadOnlyField(source='author.email')
+    username = serializers.ReadOnlyField(source='author.username')
+    first_name = serializers.ReadOnlyField(source='author.first_name')
+    last_name = serializers.ReadOnlyField(source='author.last_name')
+    is_subscribed = serializers.SerializerMethodField()
+    recipes = serializers.SerializerMethodField()
+    recipes_count = serializers.SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = ('email', 'id', 'username', 'first_name', 'last_name',
+                  'is_subscribed', 'recipes', 'recipes_count')
+
+    def get_is_subscribed(self, obj):
+        request = self.context.get('request')
+        if not request or request.user.is_anonymous:
+            return False
+        return Follow.objects.filter(
+            user=obj.user, author=obj.author
+        ).exists()
+
+    def get_recipes(self, obj):
+        request = self.context.get('request')
+        limit = request.GET.get('recipes_limit')
+        queryset = Recipe.objects.filter(author=obj.author)
+        if limit is not None:
+            queryset = Recipe.objects.filter(
+                author=obj.author
+            )[:int(limit)]
+
+        return FollowerRecipeSerializer(queryset, many=True).data
 
 
 class FollowSerializer(serializers.ModelSerializer):
@@ -196,10 +231,11 @@ class FavoriteSerializer(serializers.ModelSerializer):
             recipe__id=recipe_id
         ).exists()
 
-        if request.method == 'GET' and favorite_exists:
+        if request.method == 'POST' and favorite_exists:
             raise serializers.ValidationError(
                 'Рецепт уже добавлен в избранное'
             )
+
         return data
 
     def to_representation(self, instance):
@@ -222,7 +258,7 @@ class PurchaseSerializer(FavoriteSerializer):
             recipe__id=recipe_id
         ).exists()
 
-        if request.method == 'GET' and purchase_exists:
+        if request.method == 'POST' and purchase_exists:
             raise serializers.ValidationError(
                 'Рецепт уже в списке покупок'
             )
