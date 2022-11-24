@@ -131,22 +131,23 @@ class Favorites(models.Model):
     recipe = models.ForeignKey(
         Recipe,
         on_delete=models.CASCADE,
-        related_name='favorite_recipe'
+        related_name='favorite_recipe',
     )
-    data_added = models.DateTimeField(
+    date_added = models.DateTimeField(
         auto_now_add=True,
-        verbose_name='Дата добавления'
+        verbose_name='Дата добавления',
     )
 
     class Meta:
         verbose_name = 'Избранное'
+        verbose_name_plural = 'Избранное'
         constraints = [
             models.UniqueConstraint(
                 fields=['user', 'recipe'], name='favorite_user_recept_unique'
             )
         ]
 
-    def __str__(self) -> str:
+    def __str__(self):
         return f'Рецепт {self.recipe} в избранном у {self.user}'
 
 
@@ -154,16 +155,16 @@ class Follow(models.Model):
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='follower'
+        related_name='follower',
     )
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='following'
+        related_name='following',
     )
     subscription_date = models.DateField(
         auto_now_add=True,
-        verbose_name='Дата подписки'
+        verbose_name='Дата подписки',
     )
 
     class Meta:
@@ -175,7 +176,7 @@ class Follow(models.Model):
             )
         ]
 
-    def __str__(self) -> str:
+    def __str__(self):
         return f'{self.user} подписан на {self.author}'
 
 
@@ -188,7 +189,7 @@ class Purchase(models.Model):
     recipe = models.ForeignKey(
         Recipe,
         on_delete=models.CASCADE,
-        verbose_name='customers'
+        related_name='customers',
     )
     date_added = models.DateTimeField(
         auto_now_add=True,
@@ -197,13 +198,13 @@ class Purchase(models.Model):
 
     class Meta:
         ordering = ('-date_added',)
-        verbose_name = ''
-        verbose_name_plural = ''
+        verbose_name = 'Покупка'
+        verbose_name_plural = 'Покупки'
         constraints = [
             models.UniqueConstraint(
                 fields=['user', 'recipe'], name='purchase_user_recipe_unique'
             )
         ]
 
-    def __str__(self) -> str:
+    def __str__(self):
         return f'Рецепт {self.recipe} в списке покупок {self.user}'

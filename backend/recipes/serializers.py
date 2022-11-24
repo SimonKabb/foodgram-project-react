@@ -82,16 +82,21 @@ class FollowSerializer(serializers.ModelSerializer):
     def validate(self, data):
         request = self.context.get('request')
         author_id = data['author'].id
-        follow_exist = Follow.objects.filter(
+        follow_exists = Follow.objects.filter(
             user=request.user,
             author__id=author_id
         ).exists()
+
         if request.method == 'GET':
-            if request.user == author_id:
-                raise serializers.ValidationError('Нельзя подписаться на себя')
-            if follow_exist:
+            if request.user.id == author_id:
                 raise serializers.ValidationError(
-                    'вы уже подписаны на этого пользователя')
+                    'Нельзя подписаться на себя'
+                )
+            if follow_exists:
+                raise serializers.ValidationError(
+                    'Вы уже подписаны на этого пользователя'
+                )
+
         return data
 
 
@@ -231,7 +236,7 @@ class FavoriteSerializer(serializers.ModelSerializer):
             recipe__id=recipe_id
         ).exists()
 
-        if request.method == 'POST' and favorite_exists:
+        if request.method == 'GET' and favorite_exists:
             raise serializers.ValidationError(
                 'Рецепт уже добавлен в избранное'
             )
