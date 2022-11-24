@@ -26,7 +26,9 @@ class CustomUserViewSet(UserViewSet):
     permission_classes = (AllowAny,)
     serializer_class = UserSerializer
 
-    @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated])
+    @action(detail=True,
+            methods=['post'],
+            permission_classes=[IsAuthenticated])
     def subscribe(self, request, id=None):
         user = request.user
         author = get_object_or_404(User, id=id)
@@ -111,7 +113,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
         return queryset
 
-    @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated])
+    @action(detail=True,
+            methods=['post'],
+            permission_classes=[IsAuthenticated])
     def favorite(self, request, pk=None):
         user = request.user
         recipe = get_object_or_404(Recipe, id=pk)
@@ -140,7 +144,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated])
+    @action(detail=True,
+            methods=['post'],
+            permission_classes=[IsAuthenticated])
     def shopping_cart(self, request, pk=None):
         user = request.user
         recipe = get_object_or_404(Recipe, id=pk)
