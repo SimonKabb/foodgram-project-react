@@ -9,7 +9,8 @@ from .models import (Favorites, Follow, Ingredient, IngredientInRecipe,
 
 
 class UserSerializer(serializers.ModelSerializer):
-    is_subscribed = serializers.SerializerMethodField()
+    is_subscribed = serializers.SerializerMethodField(
+        method_name='get_is_subscribed')
 
     class Meta:
         model = User
@@ -41,9 +42,11 @@ class FollowerSerializer(serializers.ModelSerializer):
     username = serializers.ReadOnlyField(source='author.username')
     first_name = serializers.ReadOnlyField(source='author.first_name')
     last_name = serializers.ReadOnlyField(source='author.last_name')
-    is_subscribed = serializers.SerializerMethodField()
-    recipes = serializers.SerializerMethodField()
-    recipes_count = serializers.SerializerMethodField()
+    is_subscribed = serializers.SerializerMethodField(
+        method_name='get_is_subscribed')
+    recipes = serializers.SerializerMethodField(method_name='get_recipes')
+    recipes_count = serializers.SerializerMethodField(
+        method_name='get_recipes_count')
 
     class Meta:
         model = User
@@ -104,7 +107,7 @@ class FollowSerializer(serializers.ModelSerializer):
 
 
 class IngredientInRecipeSerializer(serializers.ModelSerializer):
-    id = serializers.ReadOnlyField(source='ingredient.id')
+    id = serializers.PrimaryKeyRelatedField(read_only=True)
     name = serializers.ReadOnlyField(source='ingredient.name')
     measurement_unit = serializers.ReadOnlyField(
         source='ingredient.measurement_unit'
@@ -139,14 +142,14 @@ class RecipeSerializer(serializers.ModelSerializer):
         source='ingredients_amounts',
         many=True, read_only=True,
     )
-    is_favorited = serializers.SerializerMethodField()
-    is_in_shopping_cart = serializers.SerializerMethodField()
+    is_favorited = serializers.SerializerMethodField(
+        method_name='get_is_favorited')
+    is_in_shopping_cart = serializers.SerializerMethodField(
+        method_name='get_is_in_shopping_cart')
 
     class Meta:
         model = Recipe
-        fields = ('id', 'tags', 'author', 'name', 'text', 'image',
-                  'ingredients', 'cooking_time',
-                  'is_favorited', 'is_in_shopping_cart')
+        fields = ('__all__')
 
     def get_is_favorited(self, obj):
         request = self.context.get('request')
@@ -206,7 +209,7 @@ class RecipeSerializer(serializers.ModelSerializer):
 
         IngredientInRecipe.objects.filter(recipe=instance).delete()
         for ingredient in validated_data.get('ingredients'):
-            ingredients_amounts = IngredientInRecipe.objects.create(
+            ingredients_amounts = IngredientInRecipe.objects.bulk_create(
                 recipe=instance,
                 ingredient_id=ingredient.get('id'),
                 amount=ingredient.get('amount')

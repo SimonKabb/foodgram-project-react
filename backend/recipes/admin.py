@@ -12,6 +12,7 @@ class IngredientAdmin(admin.ModelAdmin):
 class IngredientInRecipeAdmin(admin.TabularInline):
     model = IngredientInRecipe
     fk_name = 'recipe'
+    min_num = 1
 
 
 class RecipeAdmin(admin.ModelAdmin):

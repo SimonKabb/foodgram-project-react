@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator
 from django.db import models
-
+from django.db.models.constraints import UniqueConstraint
 User = get_user_model()
 
 
@@ -14,6 +14,8 @@ class Ingredient(models.Model):
         verbose_name='Единица измерения',
         max_length=100
     )
+    UniqueConstraint(fields=['name', 'measurement_unit'],
+                     name='unique_ingtidient')
 
     class Meta:
         ordering = ('name',)
@@ -121,6 +123,10 @@ class IngredientInRecipe(models.Model):
             )
         ]
 
+    def __str__(self) -> str:
+        return (f'В рецепте {self.recipe.name}: '
+                f'{self.ingredient.name} {self.amount}')
+
 
 class Favorites(models.Model):
     user = models.ForeignKey(
@@ -148,7 +154,7 @@ class Favorites(models.Model):
         ]
 
     def __str__(self):
-        return f'Рецепт {self.recipe} в избранном у {self.user}'
+        return f'Рецепт {self.recipe.name} в избранном у {self.user.username}'
 
 
 class Follow(models.Model):
@@ -177,7 +183,7 @@ class Follow(models.Model):
         ]
 
     def __str__(self):
-        return f'{self.user} подписан на {self.author}'
+        return f'{self.user.username} подписан на {self.author.username}'
 
 
 class Purchase(models.Model):
@@ -207,4 +213,5 @@ class Purchase(models.Model):
         ]
 
     def __str__(self):
-        return f'Рецепт {self.recipe} в списке покупок {self.user}'
+        return (f'Рецепт {self.recipe.name} '
+                f'в списке покупок {self.user.username}')

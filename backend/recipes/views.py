@@ -23,7 +23,7 @@ from .serializers import (FavoriteSerializer, FollowSerializer,
 class CustomUserViewSet(UserViewSet):
     queryset = User.objects.all()
     pagination_class = CustomPagination
-    permission_classes = (AllowAny,)
+    permission_classes = (IsOwnerOrAdminOrReadOnly,)
     serializer_class = UserSerializer
 
     @action(detail=True,
