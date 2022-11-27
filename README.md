@@ -8,6 +8,7 @@
 http://51.250.105.140/
 
 ### Стек технологий:
+
 Python
 Django REST framework
 Docker
@@ -17,15 +18,18 @@ PostgreSQL
 Сервер работает с Docker и docker-compose
 
 - Клонирование репозитория:
+```
 git clone https://github.com/TheXtreme30/foodgram-project-react.git
-
-- Выполните команды:
+```
+- Выполните команды
+```
 cd foodgram-project-react/backend/
 docker-compose up -d
 docker-compose exec web python manage.py migrate --noinput
 docker-compose exec web python manage.py collectstatic --no-input
-
+```
 -Создайте суперпользователя:
+```
 docker-compose exec web python manage.py createsuperuser
-
+```
 Backend-разработчик: Семен Капустников.
