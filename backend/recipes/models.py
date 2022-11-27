@@ -42,7 +42,7 @@ class Tag(models.Model):
     )
 
     class Meta:
-        verbose_name = 'тег',
+        verbose_name = 'тег'
         verbose_name_plural = 'теги'
 
     def __str__(self) -> str:

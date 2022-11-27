@@ -1,4 +1,4 @@
-from django.db.models import Exists, OuterRef
+from django.db.models import Exists, OuterRef, Sum
 from django.http.response import HttpResponse
 
 from djoser.views import UserViewSet
@@ -177,30 +177,16 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, permission_classes=[IsAuthenticated])
     def download_shopping_cart(self, request):
-        user = request.user
-        shopping_cart = user.purchases.all()
-        list = {}
-        for item in shopping_cart:
-            recipe = item.recipe
-            ingredients = IngredientInRecipe.objects.filter(recipe=recipe)
-            for ingredient in ingredients:
-                amount = ingredient.amount
-                name = ingredient.ingredient.name
-                measurement_unit = ingredient.ingredient.measurement_unit
-                if name not in list:
-                    list[name] = {
-                        'measurement_unit': measurement_unit,
-                        'amount': amount
-                    }
-                else:
-                    list[name]['amount'] = (
-                        list[name]['amount'] + amount
-                    )
-
+        ingredients = Recipe.objects.filter(
+            customers__user=request.user
+        ).values_list(
+            'ingredients_amounts__ingredient__name',
+            'ingredients_amounts__ingredient__measurement_unit'
+        ).annotate(amount=Sum('ingredients_amounts__amount'))
         shopping_list = []
-        for item in list:
-            shopping_list.append(f'{item} - {list[item]["amount"]} '
-                                 f'{list[item]["measurement_unit"]} \n')
+        for name, measurement_unit, amount in ingredients:
+            shopping_list.append(f'{name} - {amount} '
+                                 f'{measurement_unit} \n')
         response = HttpResponse(shopping_list, 'Content-Type: text/plain')
         response['Content-Disposition'] = 'attachment; filename="shoplist.txt"'
 
