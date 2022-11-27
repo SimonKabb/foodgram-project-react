@@ -10,7 +10,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
 from .filters import IngredientNameFilter, RecipeFilter
-from .models import (Favorites, Follow, Ingredient, IngredientInRecipe,
+from .models import (Favorites, Follow, Ingredient,
                      Purchase, Recipe, Tag, User)
 from .pagination import CustomPagination
 from .permissions import IsOwnerOrAdminOrReadOnly
