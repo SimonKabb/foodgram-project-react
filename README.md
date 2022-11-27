@@ -32,4 +32,6 @@ docker-compose exec web python manage.py collectstatic --no-input
 ```
 docker-compose exec web python manage.py createsuperuser
 ```
+
+________________________________________
 Backend-разработчик: Семен Капустников.
