@@ -177,7 +177,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, permission_classes=[IsAuthenticated])
     def download_shopping_cart(self, request):
-        ingredients = Recipe.objects.filter(
+        ingredients = Recipe.objects.select_related('customers').filter(
             customers__user=request.user
         ).values_list(
             'ingredients_amounts__ingredient__name',

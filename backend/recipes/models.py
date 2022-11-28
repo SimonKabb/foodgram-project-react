@@ -1,7 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator
 from django.db import models
-from django.db.models.constraints import UniqueConstraint
 User = get_user_model()
 
 
@@ -14,13 +13,15 @@ class Ingredient(models.Model):
         verbose_name='Единица измерения',
         max_length=100
     )
-    UniqueConstraint(fields=['name', 'measurement_unit'],
-                     name='unique_ingtidient')
 
     class Meta:
         ordering = ('name',)
-        verbose_name = 'ингредиент'
-        verbose_name_plural = 'ингредиенты'
+        verbose_name = 'Ингредиент'
+        verbose_name_plural = 'Ингредиенты'
+        constraints = [
+            models.UniqueConstraint(fields=['name', 'measurement_unit'],
+                                    name='unique_ingtidient')
+        ]
 
     def __str__(self) -> str:
         return f'{self.name} {self.measurement_unit}'

@@ -115,7 +115,7 @@ class IngredientInRecipeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = IngredientInRecipe
-        fields = ('id', 'name', 'amount', 'measurement_unit')
+        fields = ('id', 'name', 'measurement_unit', 'amount')
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -209,7 +209,7 @@ class RecipeSerializer(serializers.ModelSerializer):
 
         IngredientInRecipe.objects.filter(recipe=instance).delete()
         for ingredient in validated_data.get('ingredients'):
-            ingredients_amounts = IngredientInRecipe.objects.bulk_create(
+            ingredients_amounts = IngredientInRecipe.objects.create(
                 recipe=instance,
                 ingredient_id=ingredient.get('id'),
                 amount=ingredient.get('amount')
