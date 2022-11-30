@@ -17,7 +17,7 @@ from .permissions import IsOwnerOrAdminOrReadOnly
 from .serializers import (FavoriteSerializer, FollowSerializer,
                           FollowerSerializer,
                           IngredientSerializer, PurchaseSerializer,
-                          RecipeSerializer, TagSerializer, UserSerializer)
+                          RecipeSerializer, TagSerializer, UserSerializer, IngredientInRecipe)
 
 
 class CustomUserViewSet(UserViewSet):
@@ -177,12 +177,19 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, permission_classes=[IsAuthenticated])
     def download_shopping_cart(self, request):
-        ingredients = Recipe.objects.select_related('customers').filter(
-            customers__user=request.user
-        ).values_list(
-            'ingredients_amounts__ingredient__name',
-            'ingredients_amounts__ingredient__measurement_unit'
-        ).annotate(amount=Sum('ingredients_amounts__amount'))
+        user = self.request.user
+        if user.is_anonymous:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+        ingredients = IngredientInRecipe.objects.select_related(
+            'recipes').filter(
+            recipe__customers__user=request.user
+        ).values(
+            'ingredient__name',
+            'ingredient__measurement_unit'
+        ).annotate(amount=Sum('amount')).values_list(
+            'ingredient__name',
+            'ingredient__measurement_unit', 'amount'
+        )
         shopping_list = []
         for name, measurement_unit, amount in ingredients:
             shopping_list.append(f'{name} - {amount} '
