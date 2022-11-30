@@ -17,7 +17,8 @@ from .permissions import IsOwnerOrAdminOrReadOnly
 from .serializers import (FavoriteSerializer, FollowSerializer,
                           FollowerSerializer,
                           IngredientSerializer, PurchaseSerializer,
-                          RecipeSerializer, TagSerializer, UserSerializer, IngredientInRecipe)
+                          RecipeSerializer, TagSerializer, 
+                          UserSerializer, IngredientInRecipe)
 
 
 class CustomUserViewSet(UserViewSet):
