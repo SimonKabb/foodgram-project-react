@@ -12,12 +12,13 @@ from rest_framework.response import Response
 from .filters import IngredientNameFilter, RecipeFilter
 from .models import (Favorites, Follow, Ingredient,
                      Purchase, Recipe, Tag, User)
+from users.models import CustomUser
 from .pagination import CustomPagination
 from .permissions import IsOwnerOrAdminOrReadOnly
 from .serializers import (FavoriteSerializer, FollowSerializer,
                           FollowerSerializer,
                           IngredientSerializer, PurchaseSerializer,
-                          RecipeSerializer, TagSerializer, 
+                          RecipeSerializer, TagSerializer,
                           UserSerializer, IngredientInRecipe)
 
 
@@ -27,9 +28,7 @@ class CustomUserViewSet(UserViewSet):
     permission_classes = (IsOwnerOrAdminOrReadOnly,)
     serializer_class = UserSerializer
 
-    @action(detail=True,
-            methods=['post'],
-            permission_classes=[IsAuthenticated])
+    @action(detail=True, permission_classes=[IsAuthenticated])
     def subscribe(self, request, id=None):
         user = request.user
         author = get_object_or_404(User, id=id)

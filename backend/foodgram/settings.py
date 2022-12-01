@@ -83,8 +83,8 @@ REST_FRAMEWORK = {
     ],
 
     'DEFAULT_PAGINATION_CLASS':
-        'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 6
+        'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 6,
 }
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -116,6 +116,15 @@ DJOSER = {
     'PASSWORD_RESET_CONFIRM_URL': 'users/reset_password/{uid}/{token}',
     'USERNAME_RESET_CONFIRM_URL': 'users/reset_email/{uid}/{token}',
     'ACTIVATION_URL': 'users/activation/{uid}/{token}',
+    'SERIALIZERS': {
+        'user': 'recipes.serializers.UserSerializer',
+        'user_create': 'recipes.serializers.UserCreateSerializer',
+        'current_user': 'recipes.serializers.UserSerializer',
+    },
+    'PERMISSIONS': {
+        'user_list': ('rest_framework.permissions.AllowAny',),
+        'user': ('rest_framework.permissions.AllowAny',),
+    },
 }
 AUTH_USER_MODEL = 'users.CustomUser'
 STATIC_URL = '/static/'
