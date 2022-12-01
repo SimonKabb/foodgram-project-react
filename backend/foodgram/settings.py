@@ -118,7 +118,6 @@ DJOSER = {
     'ACTIVATION_URL': 'users/activation/{uid}/{token}',
     'SERIALIZERS': {
         'user': 'recipes.serializers.UserSerializer',
-        'user_create': 'recipes.serializers.UserCreateSerializer',
         'current_user': 'recipes.serializers.UserSerializer',
     },
     'PERMISSIONS': {
