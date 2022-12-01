@@ -12,7 +12,6 @@ from rest_framework.response import Response
 from .filters import IngredientNameFilter, RecipeFilter
 from .models import (Favorites, Follow, Ingredient,
                      Purchase, Recipe, Tag, User)
-from users.models import CustomUser
 from .pagination import CustomPagination
 from .permissions import IsOwnerOrAdminOrReadOnly
 from .serializers import (FavoriteSerializer, FollowSerializer,
