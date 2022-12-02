@@ -6,7 +6,7 @@ from djoser.views import UserViewSet
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 
 from .filters import IngredientNameFilter, RecipeFilter
@@ -22,7 +22,9 @@ from .serializers import (FavoriteSerializer, FollowSerializer,
 
 
 class CustomUserViewSet(UserViewSet):
-    queryset = User.objects.all()
+    def get_queryset(self):
+        return User.objects.all()
+
     pagination_class = CustomPagination
     permission_classes = (IsOwnerOrAdminOrReadOnly,)
     serializer_class = UserSerializer
@@ -86,12 +88,15 @@ class IngredientViewSet(viewsets.ModelViewSet):
 class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
-    permission_classes = (IsOwnerOrAdminOrReadOnly,)
+    permission_classes = (IsAuthenticatedOrReadOnly,)
     filter_class = RecipeFilter
     pagination_class = CustomPagination
 
     def perform_create(self, serializer):
         return serializer.save(author=self.request.user)
+
+    def perform_update(self, serializer):
+        pass
 
     def get_queryset(self):
         user = self.request.user
