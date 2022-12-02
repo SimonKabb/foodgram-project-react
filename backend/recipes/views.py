@@ -2,11 +2,12 @@ from django.db.models import Exists, OuterRef, Sum
 from django.http.response import HttpResponse
 
 from djoser.views import UserViewSet
-
+from django.core.exceptions import ValidationError
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
-from rest_framework.permissions import AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly
+from rest_framework.permissions import (
+    AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly)
 from rest_framework.response import Response
 
 from .filters import IngredientNameFilter, RecipeFilter
@@ -96,7 +97,10 @@ class RecipeViewSet(viewsets.ModelViewSet):
         return serializer.save(author=self.request.user)
 
     def perform_update(self, serializer):
-        pass
+        obj = Recipe.objects.get(author=self.request.user)
+        if self.request.user != obj.author:
+            raise ValidationError('You are not the author of the recipe')
+        serializer.save()
 
     def get_queryset(self):
         user = self.request.user
