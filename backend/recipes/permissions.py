@@ -5,7 +5,7 @@ class IsOwnerOrAdminOrReadOnly(BasePermission):
     def has_permission(self, request, view):
         if request.method == 'POST':
             return request.user.is_authenticated
-        return True
+        return request.method in SAFE_METHODS
 
     def has_object_permission(self, request, view, obj):
         if request.method in SAFE_METHODS or request.user.is_superuser:
