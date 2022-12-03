@@ -7,7 +7,7 @@ from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import (
-    AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly)
+    AllowAny, IsAuthenticated)
 from rest_framework.response import Response
 
 from .filters import IngredientNameFilter, RecipeFilter
@@ -86,40 +86,40 @@ class IngredientViewSet(viewsets.ModelViewSet):
     filterset_class = IngredientNameFilter
 
 
-class RecipeViewSet(viewsets.ModelViewSet):
-    queryset = Recipe.objects.all()
-    serializer_class = RecipeSerializer
-    permission_classes = (IsOwnerOrAdminOrReadOnly,)
-    filter_class = RecipeFilter
-    pagination_class = CustomPagination
+# class RecipeViewSet(viewsets.ModelViewSet):
+#     queryset = Recipe.objects.all()
+#     serializer_class = RecipeSerializer
+#     permission_classes = (IsOwnerOrAdminOrReadOnly,)
+#     filter_class = RecipeFilter
+#     pagination_class = CustomPagination
 
-    def perform_create(self, serializer):
-        return serializer.save(author=self.request.user)
+#     def perform_create(self, serializer):
+#         return serializer.save(author=self.request.user)
 
-    def perform_update(self, serializer):
-        obj = Recipe.objects.get(author=self.request.user)
-        if self.request.user != obj.author:
-            raise ValidationError('You are not the author of the recipe')
-        serializer.save()
+#     def perform_update(self, serializer):
+#         obj = Recipe.objects.get(author=self.request.user)
+#         if self.request.user != obj.author:
+#             raise ValidationError('You are not the author of the recipe')
+#         serializer.save()
 
-    def get_queryset(self):
-        user = self.request.user
-        if user.is_anonymous:
-            return Recipe.objects.all()
-        queryset = Recipe.objects.annotate(
-            is_favorited=Exists(Favorites.objects.filter(
-                user=user, recipe_id=OuterRef('pk')
-            )),
-            is_in_shopping_cart=Exists(Purchase.objects.filter(
-                user=user, recipe_id=OuterRef('pk')
-            ))
-        )
-        if self.request.GET.get('is_favorited'):
-            return queryset.filter(is_favorited=True)
-        elif self.request.GET.get('is_in_shopping_cart'):
-            return queryset.filter(is_in_shopping_cart=True)
+#     def get_queryset(self):
+#         user = self.request.user
+#         if user.is_anonymous:
+#             return Recipe.objects.all()
+#         queryset = Recipe.objects.annotate(
+#             is_favorited=Exists(Favorites.objects.filter(
+#                 user=user, recipe_id=OuterRef('pk')
+#             )),
+#             is_in_shopping_cart=Exists(Purchase.objects.filter(
+#                 user=user, recipe_id=OuterRef('pk')
+#             ))
+#         )
+#         if self.request.GET.get('is_favorited'):
+#             return queryset.filter(is_favorited=True)
+#         elif self.request.GET.get('is_in_shopping_cart'):
+#             return queryset.filter(is_in_shopping_cart=True)
 
-        return queryset
+#         return queryset
 
     @action(detail=True,
             methods=['post'],
