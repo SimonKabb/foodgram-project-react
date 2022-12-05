@@ -96,12 +96,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         return serializer.save(author=self.request.user)
 
-    def perform_update(self, serializer):
-        obj = Recipe.objects.get(author=self.request.user)
-        if self.request.user != obj.author:
-            raise ValidationError('You are not the author of the recipe')
-        serializer.save()
-
     def get_queryset(self):
         user = self.request.user
         if user.is_anonymous:
