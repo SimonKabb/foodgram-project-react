@@ -10,6 +10,7 @@ class IsOwnerOrAdminOrReadOnly(BasePermission):
     def has_object_permission(self, request, view, obj):
         if request.META['HTTP_REFERER'][-5:] == 'edit/':
             return False
-        if (request.method in SAFE_METHODS or request.user.is_superuser):
+        if ((request.method in SAFE_METHODS or request.user.is_superuser)
+                and request.META['HTTP_REFERER'][-5:] != 'edit/'):
             return True
         return request.user == obj.author
