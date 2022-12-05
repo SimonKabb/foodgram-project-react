@@ -97,6 +97,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
+        
         if user.is_anonymous:
             return Recipe.objects.all()
         queryset = Recipe.objects.annotate(
