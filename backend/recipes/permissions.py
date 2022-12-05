@@ -13,4 +13,5 @@ class IsOwnerOrAdminOrReadOnly(BasePermission):
         if ((request.method in SAFE_METHODS or request.user.is_superuser)
                 and request.META['HTTP_REFERER'][-5:] != 'edit/'):
             return True
-        return request.user == obj.author
+        else:
+            return request.user == obj.author
