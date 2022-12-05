@@ -2,7 +2,6 @@ from django.db.models import Exists, OuterRef, Sum
 from django.http.response import HttpResponse
 
 from djoser.views import UserViewSet
-from django.core.exceptions import ValidationError
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
