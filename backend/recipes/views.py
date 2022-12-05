@@ -13,7 +13,7 @@ from .filters import IngredientNameFilter, RecipeFilter
 from .models import (Favorites, Follow, Ingredient,
                      Purchase, Recipe, Tag, User)
 from .pagination import CustomPagination
-from .permissions import IsOwnerOrAdminOrReadOnly
+from .permissions import IsOwnerOrAdminOrReadOnly, IsOwnerOrAdminOrReadOnlyUser
 from .serializers import (FavoriteSerializer, FollowSerializer,
                           FollowerSerializer,
                           IngredientSerializer, PurchaseSerializer,
@@ -26,7 +26,7 @@ class CustomUserViewSet(UserViewSet):
         return User.objects.all()
 
     pagination_class = CustomPagination
-    permission_classes = (IsOwnerOrAdminOrReadOnly,)
+    permission_classes = (IsOwnerOrAdminOrReadOnlyUser,)
     serializer_class = UserSerializer
 
     @action(detail=True,
