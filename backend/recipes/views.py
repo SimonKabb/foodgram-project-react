@@ -29,7 +29,9 @@ class CustomUserViewSet(UserViewSet):
     permission_classes = (IsOwnerOrAdminOrReadOnly,)
     serializer_class = UserSerializer
 
-    @action(detail=True, permission_classes=[IsAuthenticated])
+    @action(detail=True,
+            methods=['post'],
+            permission_classes=[IsAuthenticated])
     def subscribe(self, request, id=None):
         user = request.user
         author = get_object_or_404(User, id=id)
@@ -97,7 +99,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        
+
         if user.is_anonymous:
             return Recipe.objects.all()
         queryset = Recipe.objects.annotate(
