@@ -9,7 +9,7 @@ class IsOwnerOrAdminOrReadOnly(BasePermission):
 
     def has_object_permission(self, request, view, obj):
         if self.request.url[-5:] == 'edit/':
-            return False
+            return True
         if request.method in SAFE_METHODS or request.user.is_superuser:
             return True
         return request.user == obj.author
