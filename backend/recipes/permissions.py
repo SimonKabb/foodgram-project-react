@@ -8,6 +8,6 @@ class IsOwnerOrAdminOrReadOnly(BasePermission):
         return request.method in SAFE_METHODS
 
     def has_object_permission(self, request, view, obj):
-        if self.request.url[-5:] != '/edit':
+        if self.request.url[-5:] == '/edit':
             return False
         return request.user == obj.author
