@@ -13,6 +13,7 @@ class IngredientInRecipeAdmin(admin.TabularInline):
     model = IngredientInRecipe
     fk_name = 'recipe'
     min_num = 1
+    list_filter = ('name',)
 
 
 class RecipeAdmin(admin.ModelAdmin):
