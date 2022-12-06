@@ -7,13 +7,13 @@ from .models import (Favorites, Follow, Ingredient, IngredientInRecipe,
 class IngredientAdmin(admin.ModelAdmin):
     list_display = ('name', 'measurement_unit')
     search_fields = ('^name',)
+    list_filter = ('name',)
 
 
 class IngredientInRecipeAdmin(admin.TabularInline):
     model = IngredientInRecipe
     fk_name = 'recipe'
     min_num = 1
-    list_filter = ('name',)
 
 
 class RecipeAdmin(admin.ModelAdmin):
