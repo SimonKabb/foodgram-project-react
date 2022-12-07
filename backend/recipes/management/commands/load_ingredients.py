@@ -5,9 +5,9 @@ from django.core.management.base import BaseCommand
 
 class Command(BaseCommand):
 
-    def load_titles(self):
+    def load_ingredients(self):
         from recipes.models import Ingredient
-        with open(r'static\data\titles.csv', encoding='utf-8') as f:
+        with open(r'static\data\ingredients.csv', encoding='utf-8') as f:
             reader = csv.reader(f)
             next(reader, None)
             for row in reader:
