@@ -7,7 +7,7 @@ class Command(BaseCommand):
 
     def load_ingredients(self):
         from recipes.models import Ingredient
-        with open(r'static\data\ingredients.csv', encoding='utf-8') as f:
+        with open(r'\.data\ingredients.csv', encoding='utf-8') as f:
             reader = csv.reader(f)
             next(reader, None)
             for row in reader:
@@ -17,4 +17,4 @@ class Command(BaseCommand):
                 ingredient.save()
 
     def handle(self, *args, **options):
-        self.load_titles()
+        self.load_ingredients()
