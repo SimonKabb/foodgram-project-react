@@ -5,7 +5,7 @@ from .models import (Favorites, Follow, Ingredient, IngredientInRecipe,
 
 
 class IngredientAdmin(admin.ModelAdmin):
-    list_display = ('name', 'measurement_unit')
+    list_display = ('id', 'name', 'measurement_unit')
     search_fields = ('^name',)
     list_filter = ('name',)
 
