@@ -181,7 +181,7 @@ class RecipeSerializer(serializers.ModelSerializer):
                 )
             ingredients_set.add(id)
         data['ingredients'] = ingredients
-        
+
         return data
 
     def create(self, validated_data):
