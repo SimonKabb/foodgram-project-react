@@ -1,21 +1,12 @@
-# версия docker-compose
 version: '3.8'
-volumes:
-  static_value:
-  media_value:
-  result_build:
-  postgres_data: # имена и описания контейнеров, которые должны быть развёрнуты
+
 services:
-  # описание контейнера db
-  #  db:
-  #    # образ, из которого должен быть запущен контейнер
-  #    image: postgres:13.0-alpine
-  #    # volume и связанная с ним директория в контейнере
-  #    volumes:
-  #      - /var/lib/postgresql/data/
-  # адрес файла, где хранятся переменные окружения
-  #    env_file:
-  #      - ./.env
+  db:
+    image: postgres:13.0-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    env_file:
+      - ./.env
   web:
     image: simonkabb/foodgram_web:latest
     restart: always
@@ -24,13 +15,12 @@ services:
       - media_value:/app/media/
     ports:
       - "8000:8000"
-    #    depends_on:
-    #      - db
+    depends_on:
+      - db
     env_file:
       - ./.env
-
   frontend:
-    image: simonkabb/foodgram_frontend:v1.0
+    image: simonkabb/foodgram_frontend:latest
     volumes:
       - ../frontend/:/app/result_build/
     depends_on:
@@ -47,6 +37,9 @@ services:
       - static_value:/var/html/static/
       - media_value:/var/html/media/
     depends_on:
-      - web
-    env_file:
-      - ./.env
+      - frontend
+
+volumes:
+  static_value:
+  media_value:
+  postgres_data:
