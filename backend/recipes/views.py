@@ -118,7 +118,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
         return queryset
 
     @action(detail=True,
-            methods=['post'],
             permission_classes=[IsAuthenticated])
     def favorite(self, request, pk=None):
         user = request.user
