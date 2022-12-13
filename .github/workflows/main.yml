@@ -64,7 +64,7 @@ jobs:
           script: |
             sudo docker compose down
             sudo docker image rm simonkabb/foodgram_web
-            sudo docker image rm simonkabb/foodgram_frontend
+            sudo docker image rm simonkabb/foodgram_frontend:v1.0
             sudo docker pull simonkabb/foodgram_web:latest
             sudo docker pull simonkabb/foodgram_frontend:v1.0
             rm .env
