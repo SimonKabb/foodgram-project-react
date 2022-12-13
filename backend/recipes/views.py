@@ -30,7 +30,6 @@ class CustomUserViewSet(UserViewSet):
     serializer_class = UserSerializer
 
     @action(detail=True,
-            methods=['post'],
             permission_classes=[IsAuthenticated])
     def subscribe(self, request, id=None):
         user = request.user
@@ -148,7 +147,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(detail=True,
-            methods=['post'],
             permission_classes=[IsAuthenticated])
     def shopping_cart(self, request, pk=None):
         user = request.user
