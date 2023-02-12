@@ -35,4 +35,4 @@ docker-compose exec web python manage.py createsuperuser
 ```
 
 ________________________________________
-Backend-разработчик: Семен Капустников.
+Backend-разработчик: Семен Капустников. tlg: @slipping_golem
